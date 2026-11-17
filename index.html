@@ -110,6 +110,7 @@ body.kpon #mbox{margin:0}
     <div class="row"><input type="text" id="sid" data-free="1" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" inputmode="text"> <button type="button" id="sbtn">はじめる</button></div>
     <p class="small" id="smsg" style="color:#b3261e"></p>
     <p class="small" id="offmsg"></p>
+    <p class="small" id="diag" style="color:#8a96a3"></p>
   </section>
   <div id="app"></div>
   <section class="card" id="finish">
@@ -706,11 +707,25 @@ function offlineStatus() { // アプリ版のみ：オフライン用の保存�
     if (m) { el.style.color = '#1a7f4b'; el.textContent = '✓ この端末は通信なしでも使えます。'; } else setTimeout(offlineStatus, 1500);
   }).catch(function () {});
 }
+function diagInfo() { // アプリ版のみ：オフライン動作の調査用の情報
+  var el = $('diag'); if (!el || !window.__PWA) return;
+  var out = [], ua = navigator.userAgent, m = ua.match(/OS (\d+[_\d]*)/) || ua.match(/Version\/([\d.]+)/);
+  out.push('制御=' + ((navigator.serviceWorker && navigator.serviceWorker.controller) ? 'あり' : 'なし'));
+  out.push('単独表示=' + ((navigator.standalone || (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches)) ? 'はい' : 'いいえ'));
+  out.push('通信=' + (navigator.onLine ? 'あり' : 'なし'));
+  out.push('OS=' + (m ? m[1].replace(/_/g, '.') : '?'));
+  var fin = function (n, r) { out.push('保存=' + n + '件'); out.push('登録=' + r); el.textContent = '診断：' + out.join('／'); };
+  try {
+    Promise.all([caches.open('exp8prep-v2').then(function (c) { return c.keys(); }), navigator.serviceWorker.getRegistrations()]).then(function (a) {
+      fin(a[0].length, a[1].map(function (r) { return (r.active ? 'A' : '') + (r.waiting ? 'W' : '') + (r.installing ? 'I' : '') + ':' + r.scope.replace(/^https?:\/\/[^/]+/, ''); }).join(',') || 'なし');
+    }).catch(function (e) { fin('?', 'エラー ' + e); });
+  } catch (e) { fin('?', '非対応'); }
+}
 $('sbtn').onclick = begin;
 $('swap').onclick = function () { saveState(); showStart(); };
 
 Scorm.init();
-if (Scorm.has()) { loadState(); render(); } else { showStart(); offlineStatus(); }
+if (Scorm.has()) { loadState(); render(); } else { showStart(); offlineStatus(); setTimeout(diagInfo, 2500); }
 </script>
 </body>
 </html>
