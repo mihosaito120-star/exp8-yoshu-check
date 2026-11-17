@@ -196,6 +196,8 @@ function fmtDMS(sec, forceSec) { var a = dmsOf(sec); return a[0] + '°' + a[1] +
 function sci(x, sf) { var e = Math.floor(Math.log(Math.abs(x)) / Math.LN10); var m = x / Math.pow(10, e); var ms = m.toFixed(sf - 1); if (parseFloat(ms) >= 10) { e++; ms = (m / 10).toFixed(sf - 1); } return ms + '×10<sup>' + (e < 0 ? '−' + (-e) : e) + '</sup>'; }
 
 /* ========== 予習問題の正誤判定 ========== */
+var Z = [[2982,774,192],[957,484,900],[845,963,611],[100,562],[1771,56],[1498,718],[1873,262],[854,849,856,798,791,776]];
+function Q(i) { return Z[i].map(function (x, j) { return ((x ^ (695 + 31 * i + 7 * j)) / 11) - 17; }); }
 var P2 = (function () {
   var D = [1.09723, 1.09687, 1.09656], n = 3;
   var mean = (D[0] + D[1] + D[2]) / n, ss = 0;
@@ -272,7 +274,8 @@ function chkFinal(v) {
   if (dec(a) !== dec(u)) return { ok: false, hint: '不確かさは合っています。測定値の桁がそろっていません。測定値の最後の桁を、不確かさの最後の桁と同じ位に合わせます（それより下の桁は四捨五入）。' };
   return { ok: false, hint: '不確かさと桁数は合っています。測定値の最後の桁は、切り捨てではなく四捨五入します。' };
 }
-var P3ANS = ['小さい', '小さい', '小さい', '長い', '長い', '3'];
+var P3O = [['大きい', '小さい'], ['大きい', '小さい'], ['大きい', '小さい'], ['長い', '短い'], ['長い', '短い'], ['3', '4', '5']];
+var P3ANS = Q(7).map(function (i, j) { return P3O[j][i]; });
 function chkP3(v) {
   if (v.some(function (x) { return x === ''; })) return { ok: false, bad: true, hint: '6か所すべてを選んでください。' };
   for (var i = 0; i < 6; i++) if (v[i] !== P3ANS[i]) return { ok: false, hint: null };
@@ -340,19 +343,19 @@ var H = {
   ]
 };
 var UNITS = [
-  { id: 'p1a', sec: 1, q: '(284°22′ ＋ 104°25′) ÷ 2 ＝', kind: 'dms', check: function (v) { return chkDMS(v, [194, 23, 30]); }, ex: 'angle', hints: H.angle },
-  { id: 'p1b', sec: 1, q: '(195°30′30″ − 161°34′) ÷ 2 ＝', kind: 'dms', check: function (v) { return chkDMS(v, [16, 58, 15]); }, ex: 'angle', hints: H.angle },
-  { id: 'p1c', sec: 1, q: '(201°37′ − 155°12′30″) ÷ 2 ＝', kind: 'dms', check: function (v) { return chkDMS(v, [23, 12, 15]); }, ex: 'angle', hints: H.angle },
+  { id: 'p1a', sec: 1, q: '(284°22′ ＋ 104°25′) ÷ 2 ＝', kind: 'dms', check: function (v) { return chkDMS(v, Q(0)); }, ex: 'angle', hints: H.angle },
+  { id: 'p1b', sec: 1, q: '(195°30′30″ − 161°34′) ÷ 2 ＝', kind: 'dms', check: function (v) { return chkDMS(v, Q(1)); }, ex: 'angle', hints: H.angle },
+  { id: 'p1c', sec: 1, q: '(201°37′ − 155°12′30″) ÷ 2 ＝', kind: 'dms', check: function (v) { return chkDMS(v, Q(2)); }, ex: 'angle', hints: H.angle },
   { id: 'p1r', sec: 1, q: '360° ＝ 2π rad であるが、1′ ＝', kind: 'sci', unit: 'rad', check: chkRad, ex: 'rad', hints: H.rad },
   { id: 'p2m', sec: 2, q: '〈R〉＝ (R₁＋R₂＋R₃)/3 ＝', kind: 'num', unit: '×10⁷ m⁻¹', check: chkMean, ex: 'mean', hints: H.mean },
   { id: 'p2s', sec: 2, q: 'σ̂ ＝', kind: 'num', unit: '×10⁷ m⁻¹', check: chkSd, ex: 'sd', hints: H.sd },
   { id: 'p2e', sec: 2, q: 'σ̂m ＝', kind: 'num', unit: '×10⁷ m⁻¹', check: chkSem, ex: 'sem', hints: H.sem },
   { id: 'p2f', sec: 2, q: 'R ＝', kind: 'pm', unit: '×10⁷ m⁻¹', check: chkFinal, ex: 'round', hints: H.fin },
   { id: 'p3', sec: 3, q: '', kind: 'p3', check: chkP3, ex: 'bohr', hints: H.bohr },
-  { id: 'p4a', sec: 4, q: '(1)', kind: 'dm', check: chkDial([63, 10]), ex: 'vernier', hints: H.dial },
-  { id: 'p4b', sec: 4, q: '(2)', kind: 'dm', check: chkDial([119, 53]), ex: 'vernier', hints: H.dial },
-  { id: 'p4c', sec: 4, q: '(3)', kind: 'dm', check: chkDial([135, 20]), ex: 'vernier', hints: H.dial },
-  { id: 'p4d', sec: 4, q: '(4)', kind: 'dm', check: chkDial([79, 41]), ex: 'vernier', hints: H.dial }
+  { id: 'p4a', sec: 4, q: '(1)', kind: 'dm', check: chkDial(Q(3)), ex: 'vernier', hints: H.dial },
+  { id: 'p4b', sec: 4, q: '(2)', kind: 'dm', check: chkDial(Q(4)), ex: 'vernier', hints: H.dial },
+  { id: 'p4c', sec: 4, q: '(3)', kind: 'dm', check: chkDial(Q(5)), ex: 'vernier', hints: H.dial },
+  { id: 'p4d', sec: 4, q: '(4)', kind: 'dm', check: chkDial(Q(6)), ex: 'vernier', hints: H.dial }
 ];
 var SECS = {
   1: { t: '予習問題 1　角度の計算', n: '関数電卓（EL-509T）の D°M′S キーを使って計算します。秒がない場合、秒の欄は 0 または空欄にします。' },
