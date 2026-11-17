@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>実験VIII 予習問題チェック</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="予習チェック">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#0f5e8c">
+<script>if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0) { navigator.serviceWorker.register('sw.js'); }</script>
+<style>
+:root{--ink:#1c2733;--sub:#5b6875;--line:#d5dce3;--bg:#f3f5f7;--card:#fff;--main:#0f5e8c;--ok:#1a7f4b;--okbg:#e6f4ec;--ng:#b3261e;--ngbg:#fdeceb;--hint:#fff7e0;--hintline:#e6c65c}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo","Noto Sans JP","Noto Sans CJK JP",sans-serif;line-height:1.75;font-size:16px}
+header{background:var(--main);color:#fff;padding:calc(14px + env(safe-area-inset-top)) 16px 14px}
+#who{display:none;align-items:center;gap:10px;font-size:14px;white-space:nowrap}
+#who button{padding:4px 12px;font-size:13px}
+#sid{width:11em;text-align:left;font-size:20px;letter-spacing:1px}
+header h1{margin:0;font-size:18px;font-weight:700}
+header p{margin:2px 0 0;font-size:13px;opacity:.9}
+#progress{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--line);padding:8px 16px;font-size:14px;display:flex;align-items:center;gap:12px}
+#bar{flex:1;height:8px;background:#e4e9ee;border-radius:4px;overflow:hidden}
+#bar i{display:block;height:100%;background:var(--ok);width:0;transition:width .3s}
+main{max-width:820px;margin:0 auto;padding:16px 12px 80px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin:0 0 16px}
+.card h2{margin:0 0 6px;font-size:17px;color:var(--main)}
+.note{font-size:14px;color:var(--sub);margin:0 0 8px}
+.rules{margin:0;padding-left:1.3em;font-size:15px}
+.rules li{margin:2px 0}
+.unit{border-top:1px solid var(--line);padding:14px 0 6px}
+.unit:first-of-type{border-top:none}
+.q{font-weight:600;margin:0 0 6px;overflow-wrap:anywhere}
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin:4px 0}
+input[type=text]{font:inherit;font-size:17px;padding:8px 8px;border:1.5px solid #9aa7b3;border-radius:6px;width:5.2em;text-align:right;background:#fff;color:var(--ink)}
+input.w{width:8.5em}
+input.s{width:3.8em}
+input:disabled{background:#eef1f4;color:#44505c;border-color:#c9d1d8}
+select{font:inherit;font-size:16px;padding:7px 6px;border:1.5px solid #9aa7b3;border-radius:6px;background:#fff;color:var(--ink)}
+select:disabled{background:#eef1f4;color:#44505c}
+button{font:inherit;font-size:16px;font-weight:700;border:none;border-radius:8px;padding:10px 18px;background:var(--main);color:#fff;cursor:pointer}
+button.sub{background:#fff;color:var(--main);border:1.5px solid var(--main)}
+button.warn{background:#a15c00}
+button:disabled{opacity:.45;cursor:default}
+.msg{margin:10px 0 4px;padding:10px 12px;border-radius:8px;font-size:15px}
+.msg.ok{background:var(--okbg);color:var(--ok);font-weight:700}
+.msg.ng{background:var(--ngbg);color:var(--ng);font-weight:700}
+.hint{margin:8px 0;padding:10px 12px;border-radius:8px;background:var(--hint);border-left:5px solid var(--hintline);font-size:15px}
+.hint b{display:block;font-size:13px;color:#7a5b00}
+.lockbox{margin:8px 0;padding:12px;border:1.5px dashed #a15c00;border-radius:8px;background:#fffaf2;font-size:15px}
+.tag{display:inline-block;font-size:12px;font-weight:700;border-radius:10px;padding:1px 9px;margin-left:8px;vertical-align:middle}
+.tag.done{background:var(--okbg);color:var(--ok)}
+.tag.lock{background:#fff0d9;color:#a15c00}
+.p3 p{margin:6px 0}
+#modal{position:fixed;inset:0;background:rgba(15,25,35,.6);display:none;align-items:flex-start;justify-content:center;overflow:auto;z-index:20;padding:12px}
+#modal.on{display:flex}
+#mbox{background:#fff;border-radius:12px;max-width:860px;width:100%;padding:16px;margin:auto 0}
+#mbox h3{margin:0 0 4px;font-size:17px;color:#a15c00}
+#timer{height:10px;background:#e4e9ee;border-radius:5px;overflow:hidden;margin:8px 0 4px}
+#timer i{display:block;height:100%;background:#a15c00;width:100%}
+#tleft{font-size:14px;color:var(--sub);text-align:right}
+.sol{margin:10px 0;padding:10px 12px;border-radius:8px;background:#eef5fa;border-left:5px solid var(--main);font-size:15px}
+.sol b.h{display:block;font-size:13px;color:var(--main)}
+.dialwrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:#fff;margin:8px 0}
+.dialwrap svg{display:block;width:100%;min-width:640px;height:auto}
+.dialwrap.zoom svg{min-width:1400px}
+table.data{border-collapse:collapse;margin:6px 0;font-size:16px}
+table.data td,table.data th{border:1px solid var(--line);padding:4px 12px;text-align:right}
+.mcq{margin:10px 0;padding:8px 10px;border:1px solid var(--line);border-radius:8px}
+.mcq label{display:inline-block;margin-right:18px;padding:4px 0}
+.key{display:inline-block;border:1px solid #8794a0;border-radius:5px;padding:0 6px;margin:0 2px;font-size:14px;background:#f7f9fa;white-space:nowrap}
+#finish{display:none;text-align:center;border:2px solid var(--ok)}
+#finish h2{color:var(--ok)}
+.small{font-size:13px;color:var(--sub)}
+#kp{position:fixed;left:0;right:0;bottom:0;z-index:40;background:#dfe5ea;border-top:1px solid #b8c2cc;padding:6px 6px calc(6px + env(safe-area-inset-bottom));display:none;flex-wrap:wrap;justify-content:center;gap:5px}
+#kp.on{display:flex}
+#kp .kr{display:flex;gap:5px;flex:1 1 100%;justify-content:center}
+#kp button{flex:1 1 0;max-width:70px;min-width:0;padding:9px 0;font-size:21px;font-weight:600;background:#fff;color:#1c2733;border:1px solid #9aa7b3;border-radius:8px;touch-action:manipulation}
+#kp button.fn{background:#0f5e8c;color:#fff;border-color:#0f5e8c;font-size:15px;max-width:96px}
+@media(min-width:760px){#kp{flex-wrap:nowrap}#kp .kr{flex:0 1 auto}#kp .kr:first-child{flex:0 1 740px}#kp .kr:last-child{flex:0 1 420px}}
+body.kpon main{padding-bottom:170px}
+body.kpon #modal{padding-bottom:130px;align-items:flex-start}
+body.kpon #mbox{margin:0}
+</style>
+</head>
+<body>
+<header>
+  <h1>実験VIII 水素原子の線スペクトル　予習問題チェック</h1>
+  <p>予習問題 1〜4 を紙に解き終えてから始めてください</p>
+</header>
+<div id="progress"><span id="pcount">確認済み 0 / 13</span><div id="bar"><i></i></div><div id="who"><span id="whoid"></span><button type="button" class="sub" id="swap">終了して交代</button></div></div>
+<main>
+  <section class="card">
+    <h2>はじめに</h2>
+    <ul class="rules">
+      <li>プリントに書いた自分の答えを入力し、「チェック」を押します。</li>
+      <li>合っているかどうかだけを表示します。<strong>正しい答えは表示しません。</strong></li>
+      <li>間違えた場合はヒントが出て、その問題は入力できなくなります。<strong>数値を変えた例題（制限時間つき）に正解すると、もう一度入力できます。</strong></li>
+      <li>関数電卓（EL-509T）、教科書、予習問題のプリントを手元に用意してください。</li>
+      <li>スマートフォンやタブレットでは、入力欄を押すと画面の下に数字キーが出ます。図や問題文を見ながら入力できます。</li>
+    </ul>
+  </section>
+  <section class="card" id="start" style="display:none">
+    <h2>学籍番号を入力してください</h2>
+    <p class="note">同じ学籍番号で入り直すと、続きから再開します（入力できなくなった問題も、そのまま引き継がれます）。終わったら「終了して交代」を押してください。</p>
+    <div class="row"><input type="text" id="sid" data-free="1" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" inputmode="text"> <button type="button" id="sbtn">はじめる</button></div>
+    <p class="small" id="smsg" style="color:#b3261e"></p>
+  </section>
+  <div id="app"></div>
+  <section class="card" id="finish">
+    <h2>すべて確認できました</h2>
+    <p>予習問題 1〜4 のすべての答えが合っています。<br>プリントの答えを、確認できた値に直してから実験に臨んでください。</p>
+    <p id="finid" style="font-size:20px;font-weight:700"></p>
+    <p class="small" id="fintime"></p>
+  </section>
+</main>
+<div id="modal"><div id="mbox"></div></div>
+<div id="kp" aria-label="数字キー"><div class="kr"><button type="button" data-k="1">1</button><button type="button" data-k="2">2</button><button type="button" data-k="3">3</button><button type="button" data-k="4">4</button><button type="button" data-k="5">5</button><button type="button" data-k="6">6</button><button type="button" data-k="7">7</button><button type="button" data-k="8">8</button><button type="button" data-k="9">9</button><button type="button" data-k="0">0</button></div><div class="kr"><button type="button" data-k=".">.</button><button type="button" data-k="-">−</button><button type="button" data-k="bs" class="fn">1字消す</button><button type="button" data-k="next" class="fn">次の欄へ</button><button type="button" data-k="close" class="fn">閉じる</button></div></div>
+
+<script>
+'use strict';
+/* ========== 設定（必要ならここだけ書き換える） ========== */
+var CFG = {
+  KEY: 'exp8prep_v1',          // 進行状況の保存名
+  REPORT_COMPLETION: false,    // true にすると全問確認時に「完了」だけをLMSへ送る（点数は常に送らない）
+  TIME: { angle: 90, rad: 90, mean: 120, sd: 180, sem: 180, round: 75, bohr: 60, vernier: 90 } // 例題の制限時間（秒）
+};
+
+/* ========== SCORM 1.2（進行状況の保存だけに使用。点数は送らない） ========== */
+var Scorm = (function () {
+  var api = null;
+  function find(w) {
+    var n = 0;
+    while (w && n < 15) {
+      try { if (w.API) return w.API; } catch (e) {}
+      if (w.parent && w.parent !== w) w = w.parent; else break;
+      n++;
+    }
+    return null;
+  }
+  return {
+    init: function () {
+      try { api = find(window) || (window.opener ? find(window.opener) : null); } catch (e) { api = null; }
+      if (api) {
+        try {
+          api.LMSInitialize('');
+          var st = api.LMSGetValue('cmi.core.lesson_status');
+          if (st === 'not attempted' || st === '' || st == null) api.LMSSetValue('cmi.core.lesson_status', 'incomplete');
+        } catch (e) { api = null; }
+      }
+    },
+    load: function () { try { return api ? api.LMSGetValue('cmi.suspend_data') : ''; } catch (e) { return ''; } },
+    save: function (s) { try { if (api) { api.LMSSetValue('cmi.suspend_data', s); api.LMSCommit(''); } } catch (e) {} },
+    complete: function () { try { if (api && CFG.REPORT_COMPLETION) { api.LMSSetValue('cmi.core.lesson_status', 'completed'); api.LMSCommit(''); } } catch (e) {} },
+    has: function () { return !!api; },
+    finish: function () { try { if (api) { api.LMSCommit(''); api.LMSFinish(''); api = null; } } catch (e) {} }
+  };
+})();
+
+/* ========== 数値の扱い ========== */
+function norm(s) {
+  s = String(s == null ? '' : s).trim();
+  s = s.replace(/[０-９]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0xFEE0); });
+  s = s.replace(/[．。]/g, '.').replace(/[−ー―‐－–]/g, '-').replace(/＋/g, '+').replace(/[,，\s　]/g, '');
+  return s;
+}
+function isNum(s) { return /^[+-]?(\d+\.?\d*|\.\d+)$/.test(s); }
+function dec(s) { var i = s.indexOf('.'); return i < 0 ? 0 : s.length - i - 1; }
+function sig(s) {
+  s = s.replace(/^[+-]/, '');
+  if (s.indexOf('.') >= 0) s = s.replace('.', '');
+  return s.replace(/^0+/, '').length;
+}
+/* 入力 s が、真の値 t を「s の桁数で正しく四捨五入した値」になっているか */
+function okR(s, t, minSig, minDec) {
+  if (!isNum(s)) return false;
+  var x = parseFloat(s), d = dec(s);
+  if (minSig && sig(s) < minSig) return false;
+  if (minDec && d < minDec) return false;
+  return Math.abs(x - t) <= 0.5 * Math.pow(10, -d) * (1 + 1e-6) + 1e-12;
+}
+function ri(a, b) { return a + Math.floor(Math.random() * (b - a + 1)); }
+function pick(arr) { return arr[ri(0, arr.length - 1)]; }
+function fmtInt(n, d) { // 整数 n を 10^-d 倍した値の文字列
+  var neg = n < 0; n = Math.abs(n);
+  var s = String(n);
+  if (d > 0) { while (s.length <= d) s = '0' + s; s = s.slice(0, s.length - d) + '.' + s.slice(s.length - d); }
+  return (neg ? '-' : '') + s;
+}
+function dmsOf(sec) { var d = Math.floor(sec / 3600), m = Math.floor((sec - d * 3600) / 60), s = sec - d * 3600 - m * 60; return [d, m, s]; }
+function fmtDMS(sec, forceSec) { var a = dmsOf(sec); return a[0] + '°' + a[1] + '′' + ((a[2] || forceSec) ? a[2] + '″' : ''); }
+function sci(x, sf) { var e = Math.floor(Math.log(Math.abs(x)) / Math.LN10); var m = x / Math.pow(10, e); var ms = m.toFixed(sf - 1); if (parseFloat(ms) >= 10) { e++; ms = (m / 10).toFixed(sf - 1); } return ms + '×10<sup>' + (e < 0 ? '−' + (-e) : e) + '</sup>'; }
+
+/* ========== 予習問題の正誤判定 ========== */
+var P2 = (function () {
+  var D = [1.09723, 1.09687, 1.09656], n = 3;
+  var mean = (D[0] + D[1] + D[2]) / n, ss = 0;
+  D.forEach(function (x) { ss += (x - mean) * (x - mean); });
+  return { mean: mean, sd: Math.sqrt(ss / (n - 1)), sdp: Math.sqrt(ss / n), sem: Math.sqrt(ss / (n - 1)) / Math.sqrt(n), semp: Math.sqrt(ss / n) / Math.sqrt(n) };
+})();
+
+function chkDMS(v, ans) {
+  var s = v.map(function (x) { x = norm(x); return x === '' ? '0' : x; });
+  if (norm(v[0]) === '' || !s.every(isNum)) return { ok: false, bad: true, hint: '度・分・秒の欄に数字を入力してください（秒がなければ 0）。' };
+  var f = s.map(parseFloat);
+  if (f[0] === ans[0] && f[1] === ans[1] && f[2] === ans[2]) return { ok: true };
+  if (s[0].indexOf('.') >= 0 || s[1].indexOf('.') >= 0 || s[2].indexOf('.') >= 0)
+    return { ok: false, hint: '小数が残っています。答えは「度・分・秒」の整数で書きます。分の端数は秒に直します（1′ = 60″）。' };
+  if (f[1] >= 60 || f[2] >= 60)
+    return { ok: false, hint: '分や秒が 60 以上になっています。角度は60進法（60′ = 1°、60″ = 1′）です。度・分・秒をつなげて10進法の小数として計算していませんか。' };
+  var t = f[0] * 3600 + f[1] * 60 + f[2], a = ans[0] * 3600 + ans[1] * 60 + ans[2];
+  if (t === 2 * a) return { ok: false, hint: 'かっこの中の計算までは合っています。最後の ÷2 を忘れていませんか。' };
+  return { ok: false, hint: null };
+}
+function chkRad(v) {
+  var m = norm(v[0]), e = norm(v[1]);
+  if (!isNum(m) || !/^[+-]?\d+$/.test(e)) return { ok: false, bad: true, hint: '「数字 ×10 の 指数」の形で入力してください。指数は −4 のような整数です。' };
+  var x = parseFloat(m) * Math.pow(10, parseInt(e, 10)), t = Math.PI / 10800;
+  var rel = function (y) { return Math.abs(x - y) / y; };
+  if (rel(t) <= 0.006 || (rel(t) <= 0.035 && sig(m) === 1 && parseFloat(m) === 3)) return { ok: true };
+  if (rel(Math.PI / 180) <= 0.035) return { ok: false, hint: 'それは 1° をラジアンに直した値です。1′ は 1° の 1/60 です。' };
+  if (rel(Math.PI / 648000) <= 0.035) return { ok: false, hint: 'それは 1″（秒）の値です。求めるのは 1′（分）です。' };
+  if (rel(1 / 60) <= 0.035) return { ok: false, hint: '1′ を度に直したところで止まっています。度からラジアンへは π/180 を掛けます。' };
+  var r = x / t, lg = Math.log(r) / Math.LN10;
+  if (Math.abs(lg - Math.round(lg)) < 0.02 && Math.round(lg) !== 0) return { ok: false, hint: '数字の部分は合っています。10 の指数（小数点の位置）を確かめてください。' };
+  return { ok: false, hint: null };
+}
+function chkMean(v) {
+  var s = norm(v[0]);
+  if (!isNum(s)) return { ok: false, bad: true, hint: '数字を入力してください（×10⁷ m⁻¹ の前の数字だけ）。' };
+  if (okR(s, P2.mean, 0, 4)) return { ok: true };
+  if (okR(s, P2.mean, 0, 0)) return { ok: false, hint: '桁を落としすぎです。ここではまだ丸めず、小数第4位以下まで書いてください。' };
+  if (okR(s, P2.mean * 3, 0, 3)) return { ok: false, hint: '3つの和になっています。データの個数で割ってください。' };
+  return { ok: false, hint: null };
+}
+function chkSd(v) {
+  var s = norm(v[0]);
+  if (!isNum(s)) return { ok: false, bad: true, hint: '数字を入力してください（×10⁷ m⁻¹ の前の数字だけ）。' };
+  if (okR(s, P2.sd, 1)) return { ok: true };
+  if (sig(s) >= 2 && okR(s, P2.sdp, 2)) return { ok: false, hint: 'それは n で割った標準偏差（電卓の σx）です。不偏標準偏差は (n−1) で割ったもので、電卓では sx です。' };
+  if (okR(s, P2.sem, 1) && !okR(s, P2.sd, 1)) return { ok: false, hint: 'それは平均値の不偏標準偏差 σ̂m のようです。この欄は √n で割る前の σ̂ です。' };
+  var x = parseFloat(s), r = x / P2.sd, lg = Math.log(r) / Math.LN10;
+  if (x > 0 && Math.abs(lg - Math.round(lg)) < 0.08 && Math.round(lg) !== 0) return { ok: false, hint: '数字は合っていそうですが、小数点の位置が違います。0 の個数を数え直してください。' };
+  return { ok: false, hint: null };
+}
+function chkSem(v) {
+  var s = norm(v[0]);
+  if (!isNum(s)) return { ok: false, bad: true, hint: '数字を入力してください（×10⁷ m⁻¹ の前の数字だけ）。' };
+  if (okR(s, P2.sem, 1)) return { ok: true };
+  if (okR(s, P2.sd, 1)) return { ok: false, hint: 'σ̂ と同じ値になっています。平均値の不偏標準偏差 σ̂m は、σ̂ を √n で割ったものです。' };
+  if (sig(s) >= 2 && okR(s, P2.semp, 2)) return { ok: false, hint: 'n で割った標準偏差（σx）から計算していませんか。sx を √n で割ります。' };
+  if (okR(s, P2.sd / 3, 1)) return { ok: false, hint: 'n で割っていませんか。割るのは √n です。' };
+  var x = parseFloat(s), r = x / P2.sem, lg = Math.log(r) / Math.LN10;
+  if (x > 0 && Math.abs(lg - Math.round(lg)) < 0.08 && Math.round(lg) !== 0) return { ok: false, hint: '数字は合っていそうですが、小数点の位置が違います。0 の個数を数え直してください。' };
+  return { ok: false, hint: null };
+}
+function chkFinal(v) {
+  var a = norm(v[0]), u = norm(v[1]);
+  if (!isNum(a) || !isNum(u)) return { ok: false, bad: true, hint: '2つの欄に数字を入力してください（×10⁷ m⁻¹ の前の数字だけ）。' };
+  var uOK = sig(u) === 1 && okR(u, P2.sem, 1);
+  if (uOK && dec(a) === dec(u) && okR(a, P2.mean, 0)) return { ok: true };
+  if (!uOK) {
+    if (sig(u) >= 2 && okR(u, P2.sem, 2)) return { ok: false, hint: '不確かさの桁が多すぎます。不確かさは有効数字1桁に四捨五入します（0 でない数字は1つだけ）。' };
+    if (okR(u, P2.sd, 1)) return { ok: false, hint: '± の後ろには σ̂ ではなく、平均値の不偏標準偏差 σ̂m を書きます。' };
+    if (sig(u) === 1 && dec(u) === 4) return { ok: false, hint: '不確かさの丸め方を確かめてください。切り捨てではなく四捨五入です。' };
+    return { ok: false, hint: '± の後ろの値が違います。σ̂m を有効数字1桁に四捨五入した値を書きます。' };
+  }
+  if (dec(a) !== dec(u)) return { ok: false, hint: '不確かさは合っています。測定値の桁がそろっていません。測定値の最後の桁を、不確かさの最後の桁と同じ位に合わせます（それより下の桁は四捨五入）。' };
+  return { ok: false, hint: '不確かさと桁数は合っています。測定値の最後の桁は、切り捨てではなく四捨五入します。' };
+}
+var P3ANS = ['小さい', '小さい', '小さい', '長い', '長い', '3'];
+function chkP3(v) {
+  if (v.some(function (x) { return x === ''; })) return { ok: false, bad: true, hint: '6か所すべてを選んでください。' };
+  for (var i = 0; i < 6; i++) if (v[i] !== P3ANS[i]) return { ok: false, hint: null };
+  return { ok: true };
+}
+function chkDial(ans) {
+  return function (v) {
+    var d = norm(v[0]), m = norm(v[1]); if (m === '') m = '0';
+    if (!isNum(d) || !isNum(m)) return { ok: false, bad: true, hint: '度と分の欄に数字を入力してください。' };
+    var fd = parseFloat(d), fm = parseFloat(m), A = ans[0] * 60 + ans[1], half = ans[1] >= 30;
+    if (fd === ans[0] && fm === ans[1]) return { ok: true };
+    if (d.indexOf('.') >= 0 || m.indexOf('.') >= 0) return { ok: false, hint: '度も分も整数で答えます。副尺は 1′ 刻みです。' };
+    if (fm >= 60) return { ok: false, hint: '分が 60 以上になっています。60′ = 1° なので、分は 0〜59 です。' };
+    var T = fd * 60 + fm;
+    if (half && T === A - 30) return { ok: false, hint: '副尺の読みは合っています。副尺の 0 の線は、主尺の半度（30′）の線を越えていませんか。越えていれば 30′ を足します。' };
+    if (!half && T === A + 30) return { ok: false, hint: '副尺の読みは合っています。副尺の 0 の線は、主尺の半度（30′）の線をまだ越えていないのに 30′ を足していませんか。' };
+    if (Math.abs(T - A) <= 2) return { ok: false, hint: '惜しいです。主尺の線と副尺の線が一直線になっているところを、もう一度よく見てください。その両隣では、ずれが左右対称になります。' };
+    if (Math.abs(T - A) === 60 || Math.abs(T - A) === 30) return { ok: false, hint: '副尺の読みは合っていそうです。副尺の 0 の線が主尺のどの線とどの線の間にあるかを、目盛を1本ずつ数えて確かめてください。' };
+    if (fm === ans[1] || fm === ans[1] % 30) return { ok: false, hint: '主尺の読み（度）を確かめてください。主尺の数字は左へ行くほど大きくなります。副尺の 0 の線の位置から読みます。' };
+    return { ok: false, hint: null };
+  };
+}
+
+/* ========== 予習問題（単位ごと）の定義 ========== */
+var H = {
+  angle: [
+    '角度は60進法（1° = 60′、1′ = 60″）です。関数電卓 EL-509T の <span class="key">D°M′S</span> キーを使って、度・分・秒をそのまま入力して計算しましたか。',
+    'キー操作（EL-509T）：284 <span class="key">D°M′S</span> 22 のように、度と分、分と秒の数字のあいだで <span class="key">D°M′S</span> を押します。かっこ ( ) の中の足し算・引き算を先にまとめ、最後に ÷ 2 ＝。答えが小数で表示された場合は、<span class="key">2ndF</span> → <span class="key">D°M′S</span>（↔DEG）で「度°分′秒″」の表示に切り替えます。',
+    '検算：すべてを秒に直して計算し（1° = 3600″、1′ = 60″）、最後に度・分・秒へ戻すと、電卓の結果を確かめられます。'
+  ],
+  rad: [
+    '360° = 2π rad から 1° が何 rad かを求め、1′ = 1° ÷ 60 を使います。',
+    '1° = π/180 rad です。これをさらに 60 で割ります。答えは「○.○ ×10 の −□ 乗」の形にします。',
+    '電卓で π ÷ 180 ÷ 60 を計算し、0 でない最初の数字が一の位にくるように小数点を動かして、動かした桁数を指数にします。'
+  ],
+  mean: [
+    '3つの値を足して 3 で割ります。×10⁷ は共通なので、数字の部分だけで計算します。ここではまだ丸めず、電卓の表示を小数第4位以下まで書きます。',
+    'EL-509T の統計モード（<span class="key">MODE</span> → <span class="key">1</span> → <span class="key">0</span>）で、値を1つ入れるたびに <span class="key">ENTER</span> を押して3つ入力します。<span class="key">ALPHA</span> → <span class="key">統計量</span>（8 のキー）→ <span class="key">0</span> で統計量の一覧を出し、x̄ を読みます。前のデータが残っていないかも確かめてください。',
+    '検算：1.09 までは3つとも共通なので、その下の桁だけを平均しても確かめられます。'
+  ],
+  sd: [
+    '不偏標準偏差 σ̂ は、平均との差の2乗の和を (n−1) で割り、平方根をとったものです。EL-509T の統計量の一覧では <span class="key">sx</span> です。',
+    '<span class="key">σx</span> は n で割った標準偏差なので使いません。統計モード（<span class="key">MODE</span> → <span class="key">1</span> → <span class="key">0</span>）にデータを入れ、<span class="key">ALPHA</span> → <span class="key">統計量</span>（8 のキー）→ <span class="key">0</span> の一覧から <span class="key">sx</span> を読みます。小数点以下の 0 の個数にも注意。',
+    '手計算での検算：① 平均との差を3つ求める　② それぞれ2乗して足す　③ (n−1) = 2 で割る　④ 平方根をとる。'
+  ],
+  sem: [
+    '平均値の不偏標準偏差 σ̂m は、σ̂ を √n で割ったものです（n はデータの個数）。',
+    'n = 3 なので √3 で割ります（3 で割るのではありません）。σ̂ は丸める前の、電卓に表示された <span class="key">sx</span> の値を使います。',
+    '統計量の一覧で読んだ sx の値を、丸めずに ÷ √3 します。'
+  ],
+  fin: [
+    '順番は、① 不確かさ（σ̂m）を有効数字1桁に四捨五入する　② 平均値を、その不確かさと同じ位まで四捨五入する。',
+    '不確かさに書く「0 でない数字」は1つだけです。平均値の小数点以下の桁数は、不確かさの小数点以下の桁数と同じになります。',
+    '例題の解説と同じ手順を、自分の数値に当てはめてください。'
+  ],
+  bohr: [
+    '(3)式の Eₙ にはマイナスの符号がついています。n = 1, 2, 3 を入れたとき、値がどう並ぶかを考えます（−4 と −1 ではどちらが小さいか）。',
+    '光のエネルギーは hν = Eₙ′ − Eₙ、振動数と波長の関係は ν = c/λ です。「エネルギー差 → 振動数 → 波長」の順に、大小を1つずつたどります。',
+    '目に見える光の中で、赤は波長がいちばん長い光です。「波長が長い ⇔ 振動数が小さい ⇔ エネルギー差が小さい」を使って n′ を選びます。'
+  ],
+  dial: [
+    '主尺の1目盛は 0.5°（= 30′）、数字は左へ行くほど大きくなります。まず、副尺の「0」の線が主尺のどの位置を指しているかを読みます。',
+    '副尺の 0 の線が半度（30′）の線を越えていれば、主尺の読みは「○°30′」です。そこへ副尺の読み（主尺の線と一直線になっている副尺の線の数字）を足します。',
+    '定規や紙の端を当てて、主尺の線と副尺の線が一直線になっているところを探します。そこが見つかれば、両隣のずれは左右対称になっています。'
+  ]
+};
+var UNITS = [
+  { id: 'p1a', sec: 1, q: '(284°22′ ＋ 104°25′) ÷ 2 ＝', kind: 'dms', check: function (v) { return chkDMS(v, [194, 23, 30]); }, ex: 'angle', hints: H.angle },
+  { id: 'p1b', sec: 1, q: '(195°30′30″ − 161°34′) ÷ 2 ＝', kind: 'dms', check: function (v) { return chkDMS(v, [16, 58, 15]); }, ex: 'angle', hints: H.angle },
+  { id: 'p1c', sec: 1, q: '(201°37′ − 155°12′30″) ÷ 2 ＝', kind: 'dms', check: function (v) { return chkDMS(v, [23, 12, 15]); }, ex: 'angle', hints: H.angle },
+  { id: 'p1r', sec: 1, q: '360° ＝ 2π rad であるが、1′ ＝', kind: 'sci', unit: 'rad', check: chkRad, ex: 'rad', hints: H.rad },
+  { id: 'p2m', sec: 2, q: '〈R〉＝ (R₁＋R₂＋R₃)/3 ＝', kind: 'num', unit: '×10⁷ m⁻¹', check: chkMean, ex: 'mean', hints: H.mean },
+  { id: 'p2s', sec: 2, q: 'σ̂ ＝', kind: 'num', unit: '×10⁷ m⁻¹', check: chkSd, ex: 'sd', hints: H.sd },
+  { id: 'p2e', sec: 2, q: 'σ̂m ＝', kind: 'num', unit: '×10⁷ m⁻¹', check: chkSem, ex: 'sem', hints: H.sem },
+  { id: 'p2f', sec: 2, q: 'R ＝', kind: 'pm', unit: '×10⁷ m⁻¹', check: chkFinal, ex: 'round', hints: H.fin },
+  { id: 'p3', sec: 3, q: '', kind: 'p3', check: chkP3, ex: 'bohr', hints: H.bohr },
+  { id: 'p4a', sec: 4, q: '(1)', kind: 'dm', check: chkDial([63, 10]), ex: 'vernier', hints: H.dial },
+  { id: 'p4b', sec: 4, q: '(2)', kind: 'dm', check: chkDial([119, 53]), ex: 'vernier', hints: H.dial },
+  { id: 'p4c', sec: 4, q: '(3)', kind: 'dm', check: chkDial([135, 20]), ex: 'vernier', hints: H.dial },
+  { id: 'p4d', sec: 4, q: '(4)', kind: 'dm', check: chkDial([79, 41]), ex: 'vernier', hints: H.dial }
+];
+var SECS = {
+  1: { t: '予習問題 1　角度の計算', n: '関数電卓（EL-509T）の D°M′S キーを使って計算します。秒がない場合、秒の欄は 0 または空欄にします。' },
+  2: { t: '予習問題 2　平均値と不確かさ', n: 'R₁ ＝ 1.09723×10⁷ m⁻¹、R₂ ＝ 1.09687×10⁷ m⁻¹、R₃ ＝ 1.09656×10⁷ m⁻¹ のとき。×10⁷ m⁻¹ の前の数字だけを入力します。' },
+  3: { t: '予習問題 3　ボーアのエネルギー準位', n: '6か所をすべて選んでから「チェック」を押します。まとめて判定し、どこが違うかは表示しません。' },
+  4: { t: '予習問題 4　目盛円板の読み方', n: 'プリントの図 (1)〜(4) を読んだ答えを入力します。' }
+};
+
+/* ========== 目盛円板の図（例題用） ========== */
+function dialSVG(theta0, mark) { // theta0: 読み（度）。0.5°刻みの主尺、1′の副尺
+  var R = 1500, cx = 450, cy = 150 - R, rad = Math.PI / 180, vc = theta0 + 7.25, o = [];
+  function pt(v, r) { var ph = (vc - v) * rad; return [cx + r * Math.sin(ph), cy + r * Math.cos(ph)]; }
+  function line(v, r0, r1, w, col) { var a = pt(v, r0), b = pt(v, r1); o.push('<line x1="' + a[0].toFixed(2) + '" y1="' + a[1].toFixed(2) + '" x2="' + b[0].toFixed(2) + '" y2="' + b[1].toFixed(2) + '" stroke="' + (col || '#111') + '" stroke-width="' + (w || 1.3) + '"/>'); }
+  var a0 = pt(vc + 17.6, R), a1 = pt(vc - 17.6, R);
+  o.push('<path d="M' + a0[0].toFixed(1) + ' ' + a0[1].toFixed(1) + ' A' + R + ' ' + R + ' 0 0 0 ' + a1[0].toFixed(1) + ' ' + a1[1].toFixed(1) + '" fill="none" stroke="#111" stroke-width="1.5"/>');
+  var k, v, i;
+  for (i = Math.ceil((vc - 16.5) * 2); i <= Math.floor((vc + 16.5) * 2); i++) {
+    v = i / 2;
+    var len = (i % 20 === 0) ? 62 : (i % 10 === 0) ? 48 : (i % 2 === 0) ? 30 : 19;
+    line(v, R, R - len);
+    if (i % 20 === 0) { var p = pt(v, R - 76); o.push('<text x="' + p[0].toFixed(1) + '" y="' + p[1].toFixed(1) + '" font-size="19" text-anchor="middle" font-family="Georgia,serif">' + v + '</text>'); }
+  }
+  for (k = 0; k <= 30; k++) {
+    v = theta0 + k * 29 / 60;
+    line(v, R, R + ((k % 10 === 0) ? 54 : (k % 5 === 0) ? 43 : 31));
+    if (k % 10 === 0) { var q = pt(v, R + 76); o.push('<text x="' + q[0].toFixed(1) + '" y="' + q[1].toFixed(1) + '" font-size="19" text-anchor="middle" font-family="Georgia,serif">' + k + '</text>'); }
+  }
+  if (mark) {
+    var m = Math.round((theta0 * 60) % 30);
+    line(theta0, R - 66, R + 58, 3, '#c62828');
+    line(theta0 + m * 29 / 60, R - 34, R + 58, 3, '#1565c0');
+    var z = pt(theta0, R + 96), c = pt(theta0 + m * 29 / 60, R + 96);
+    o.push('<text x="' + z[0].toFixed(1) + '" y="' + z[1].toFixed(1) + '" font-size="15" text-anchor="middle" fill="#c62828" font-weight="700">副尺の0</text>');
+    o.push('<text x="' + c[0].toFixed(1) + '" y="' + c[1].toFixed(1) + '" font-size="15" text-anchor="middle" fill="#1565c0" font-weight="700">一致</text>');
+  }
+  return '<div class="dialwrap"><svg viewBox="0 -14 900 ' + (mark ? 276 : 258) + '" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="目盛円板">' + o.join('') + '</svg></div>';
+}
+
+/* ========== 例題の生成 ========== */
+var GEN = {
+  angle: function () {
+    var op = Math.random() < 0.5 ? '+' : '-', A, B, T, sa, sb;
+    do {
+      sa = pick([0, 30]); sb = (sa === 0) ? 30 : pick([0, 30]);
+      A = ri(150, 300) * 3600 + ri(1, 59) * 60 + sa;
+      B = ri(40, 140) * 3600 + ri(1, 59) * 60 + sb;
+      T = op === '+' ? A + B : A - B;
+    } while (T % 2 !== 0 || T <= 0 || (T / 2) % 60 === 0);
+    var H2 = T / 2, a = dmsOf(H2), sym = op === '+' ? '＋' : '−';
+    return {
+      html: '<p class="q">(' + fmtDMS(A) + ' ' + sym + ' ' + fmtDMS(B) + ') ÷ 2 ＝</p>', kind: 'dms',
+      check: function (v) { var s = v.map(function (x) { x = norm(x); return x === '' ? '0' : x; }); return s.every(isNum) && +s[0] === a[0] && +s[1] === a[1] && +s[2] === a[2]; },
+      sol: 'かっこの中：' + fmtDMS(A) + ' ' + sym + ' ' + fmtDMS(B) + ' ＝ ' + fmtDMS(T, true) + '<br>÷2 して：<strong>' + fmtDMS(H2, true) + '</strong><br>電卓（EL-509T）では、度と分、分と秒の数字のあいだで <span class="key">D°M′S</span> を押して入力し、( ) でまとめて ÷ 2 ＝。小数で表示された場合は <span class="key">2ndF</span> → <span class="key">D°M′S</span>（↔DEG）で切り替えます。手計算なら、繰り上がり・繰り下がりは 60 ごとです。'
+    };
+  },
+  rad: function () {
+    var c = pick([['15″', 15], ['20″', 20], ['40″', 40], ['7′', 420], ['25′', 1500], ['45′', 2700], ['2°30′', 9000], ['12°', 43200]]);
+    var t = c[1] * Math.PI / 648000;
+    return {
+      html: '<p class="q">' + c[0] + ' は何 rad か。有効数字2桁で答えよ。</p>', kind: 'sci', unit: 'rad',
+      check: function (v) { var m = norm(v[0]), e = norm(v[1]); if (!isNum(m) || !/^[+-]?\d+$/.test(e)) return false; var tm = t / Math.pow(10, parseInt(e, 10)); return sig(m) >= 2 && tm >= 1 && tm < 10 && Math.abs(parseFloat(m) - tm) <= 0.5 * Math.pow(10, -dec(m)) * (1 + 1e-6); },
+      sol: '度に直す：' + c[0] + ' ＝ ' + (c[1] / 3600).toPrecision(4) + '°（1′ = 1/60°、1″ = 1/3600°）<br>ラジアンへ：× π/180 ＝ <strong>' + sci(t, 2) + ' rad</strong>'
+    };
+  },
+  _data: function () {
+    var base = ri(1200, 9500), v = [], i, s = 0, ss = 0;
+    do { v = []; for (i = 0; i < 5; i++) v.push(base + ri(-28, 28)); s = v.reduce(function (a, b) { return a + b; }, 0); } while (new Set(v).size < 4);
+    var mean = s / 5; v.forEach(function (x) { ss += (x - mean) * (x - mean); });
+    return { v: v, mean: mean / 1000, ss: ss / 1e6, sd: Math.sqrt(ss / 4) / 1000, sdp: Math.sqrt(ss / 5) / 1000, sem: Math.sqrt(ss / 4) / 1000 / Math.sqrt(5),
+      tbl: '<table class="data"><tr>' + v.map(function (x, j) { return '<th>x' + '₁₂₃₄₅'[j] + '</th>'; }).join('') + '</tr><tr>' + v.map(function (x) { return '<td>' + fmtInt(x, 3) + '</td>'; }).join('') + '</tr></table>' };
+  },
+  mean: function () {
+    var d = GEN._data();
+    return {
+      html: '<p class="q">次の5つの測定値の平均値を求めよ（丸めずに書く）。</p>' + d.tbl, kind: 'num', unit: '',
+      check: function (v) { return okR(norm(v[0]), d.mean, 0, 3); },
+      sol: '5つの和 ＝ ' + (d.mean * 5).toFixed(3) + '、5 で割って <strong>' + d.mean.toFixed(4) + '</strong><br>統計モード（MODE → 1 → 0）にデータを入力し、ALPHA → 統計量 → 0 の一覧で x̄ を読んでも求められます。'
+    };
+  },
+  sd: function () {
+    var d = GEN._data();
+    return {
+      html: '<p class="q">次の5つの測定値の不偏標準偏差 σ̂ を求めよ（有効数字1桁または2桁）。</p>' + d.tbl, kind: 'num', unit: '',
+      check: function (v) { return okR(norm(v[0]), d.sd, 1); },
+      sol: '平均 ＝ ' + d.mean.toFixed(4) + '<br>平均との差の2乗の和 ＝ ' + d.ss.toFixed(7) + '<br>(n−1) ＝ 4 で割って平方根：σ̂ ＝ <strong>' + d.sd.toPrecision(2) + '</strong>（有効数字1桁なら ' + d.sd.toPrecision(1) + '。電卓の <span class="key">sx</span>）<br>n ＝ 5 で割ると ' + d.sdp.toPrecision(2) + ' になり、これは <span class="key">σx</span> の値です。こちらは使いません。'
+    };
+  },
+  sem: function () {
+    var d = GEN._data();
+    return {
+      html: '<p class="q">次の5つの測定値について、平均値の不偏標準偏差 σ̂m を求めよ（有効数字1桁または2桁）。</p>' + d.tbl, kind: 'num', unit: '',
+      check: function (v) { return okR(norm(v[0]), d.sem, 1); },
+      sol: '不偏標準偏差 σ̂ ＝ ' + d.sd.toPrecision(3) + '（電卓の <span class="key">sx</span>）<br>√n ＝ √5 で割って：σ̂m ＝ <strong>' + d.sem.toPrecision(2) + '</strong>（有効数字1桁なら ' + d.sem.toPrecision(1) + '）<br>5 で割るのではなく、√5 で割ります。'
+    };
+  },
+  round: function () {
+    var p = ri(1, 4), U, M;
+    do { U = ri(110, 889); } while (U % 100 >= 45 && U % 100 <= 55);
+    do { M = ri(10000, 99999); } while (M % 100 >= 45 && M % 100 <= 55);
+    var u1 = Math.round(U / 100), m1 = Math.round(M / 100);
+    var uRaw = fmtInt(U, p + 2), mRaw = fmtInt(M, p + 2), uS = fmtInt(u1, p), mS = fmtInt(m1, p);
+    return {
+      html: '<p class="q">平均値 〈x〉＝ ' + mRaw + '、平均値の不偏標準偏差 σ̂m ＝ ' + uRaw + ' のとき、結果を正しい桁で書け。</p>', kind: 'pm', unit: '',
+      check: function (v) { return norm(v[0]) === mS && norm(v[1]) === uS; },
+      sol: '① 不確かさを有効数字1桁に四捨五入：' + uRaw + ' → <strong>' + uS + '</strong><br>② 平均値を同じ位（小数第' + p + '位）まで四捨五入：' + mRaw + ' → <strong>' + mS + '</strong><br>結果：x ＝ ' + mS + ' ± ' + uS
+    };
+  },
+  bohr: function () {
+    var pool = [
+      ['Eₙ ＝ −13.6/n² [eV] のとき、エネルギーが小さい（低い）のは', ['n ＝ 2', 'n ＝ 5'], 0, 'E₂ ＝ −3.4 eV、E₅ ＝ −0.54 eV。マイナスがついているので、n が小さいほど値は小さい。'],
+      ['n′＝6 → n＝2 と n′＝4 → n＝2 の遷移。出てくる光のエネルギーが大きいのは', ['6 → 2', '4 → 2'], 0, '上の準位が高いほど、落ちる高さ（エネルギー差）は大きい。'],
+      ['光のエネルギー hν が大きいほど、波長 λ は', ['長い', '短い'], 1, 'ν ＝ c/λ なので、ν が大きいほど λ は短い。'],
+      ['目に見える光で、波長が短いのは', ['橙', '青'], 1, '波長は 赤 ＞ 橙 ＞ 黄 ＞ 緑 ＞ 青 ＞ 紫 の順に短くなる。'],
+      ['ν ＝ c/λ より、波長 λ が 2 倍になると振動数 ν は', ['2 倍', '1/2 倍'], 1, 'ν と λ は反比例する。'],
+      ['E₃ − E₂ と E₄ − E₃ で、大きいのは', ['E₃ − E₂', 'E₄ − E₃'], 0, '準位の間隔は n が大きくなるほど詰まる（教科書 図1）。E₃−E₂ ＝ 1.89 eV、E₄−E₃ ＝ 0.66 eV。'],
+      ['n＝2 へ落ちる遷移（バルマー系列）で、n′ が大きいほど光の波長は', ['長い', '短い'], 1, 'n′ が大きいほどエネルギー差が大きく、振動数が大きく、波長は短い。'],
+      ['振動数 ν が小さい光ほど、光子1個のエネルギーは', ['大きい', '小さい'], 1, '光子のエネルギーは hν。ν に比例する。']
+    ];
+    var idx = [], qs; while (idx.length < 3) { var r = ri(0, pool.length - 1); if (idx.indexOf(r) < 0) idx.push(r); }
+    qs = idx.map(function (i) { return pool[i]; });
+    return {
+      html: '<p class="q">次の3問すべてに答えよ（3問とも合って正解）。</p>' + qs.map(function (q, j) {
+        return '<div class="mcq"><div>' + (j + 1) + '. ' + q[0] + '</div>' + q[1].map(function (c, k) { return '<label><input type="radio" name="ex_m' + j + '" value="' + k + '"> ' + c + '</label>'; }).join('') + '</div>';
+      }).join(''), kind: 'mcq3',
+      check: function (v) { return qs.every(function (q, j) { return v[j] === String(q[2]); }); },
+      sol: qs.map(function (q, j) { return (j + 1) + '. <strong>' + q[1][q[2]] + '</strong>　' + q[3]; }).join('<br>')
+    };
+  },
+  vernier: function () {
+    var M = ri(50, 310) / 2, m = ri(2, 28), th = M + m / 60, D = Math.floor(M), half = (M % 1) !== 0, ansT = D * 60 + (half ? 30 : 0) + m;
+    return {
+      html: '<p class="q">次の目盛円板が示す角度を読め（±1′ まで正解とする）。</p>' + dialSVG(th, false) + '<p class="small"><button type="button" class="sub" id="zoombtn" style="padding:4px 12px;font-size:14px">図を拡大／戻す</button>　図は横にスクロールできます。</p>', kind: 'dm',
+      check: function (v) { var d = norm(v[0]), mm = norm(v[1]); if (mm === '') mm = '0'; if (!/^\d+$/.test(d) || !/^\d+$/.test(mm) || +mm >= 60) return false; return Math.abs((+d) * 60 + (+mm) - ansT) <= 1; },
+      sol: dialSVG(th, true) + '① 副尺の 0 の線（赤）は、主尺の ' + D + '°' + (half ? '30′' : '') + ' の線を越え、次の線の手前にある → 主尺の読みは ' + D + '°' + (half ? '30′' : '00′') + '<br>② 主尺の線と一直線になる副尺の線（青）は ' + m + ' → 副尺の読みは ' + m + '′<br>③ 足して：<strong>' + D + '°' + ((half ? 30 : 0) + m) + '′</strong>' + (half ? '<br>半度（30′）の線を越えているので、30′ を足すのを忘れないこと。' : '<br>半度（30′）の線はまだ越えていないので、30′ は足しません。')
+    };
+  }
+};
+
+/* ========== 状態の保存 ========== */
+var STATE = { v: 1, u: {}, done: '' }, SID = '';
+function skey() { return CFG.KEY + (SID ? '_' + SID : ''); }
+function loadState() {
+  STATE = { v: 1, u: {}, done: '' };
+  var s = Scorm.load();
+  if (!s) { try { s = localStorage.getItem(skey()) || ''; } catch (e) { s = ''; } }
+  if (s) { try { var o = JSON.parse(s); if (o && o.v === 1 && o.u) STATE = o; } catch (e) {} }
+  UNITS.forEach(function (u) { if (!STATE.u[u.id]) STATE.u[u.id] = { s: 'open', f: 0 }; });
+}
+function saveState() {
+  var s = JSON.stringify(STATE);
+  try { localStorage.setItem(skey(), s); } catch (e) {}
+  Scorm.save(s);
+}
+
+/* ========== 画面 ========== */
+function $(id) { return document.getElementById(id); }
+var COARSE = false;
+try { COARSE = (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) || ('ontouchstart' in window) || (navigator.maxTouchPoints > 0); } catch (e) {}
+
+/* ========== 画面内の数字キー（タッチ端末用。OSのキーボードで図が隠れないようにする） ========== */
+var KT = null, KHIDE = null;
+function kpShow(el) {
+  if (!COARSE) return;
+  KT = el; clearTimeout(KHIDE);
+  $('kp').classList.add('on'); document.body.classList.add('kpon');
+  setTimeout(function () { if (KT === el && el.scrollIntoView) el.scrollIntoView({ block: 'center' }); }, 60);
+}
+function kpHide() { KT = null; $('kp').classList.remove('on'); document.body.classList.remove('kpon'); }
+function kpKey(k) {
+  var el = KT; if (!el || el.disabled) return;
+  if (k === 'close') { el.blur(); kpHide(); return; }
+  if (k === 'next') {
+    var box = el.closest('#mbox') || el.closest('.unit') || document, list = Array.prototype.slice.call(box.querySelectorAll('input[type=text]:not(:disabled)')), i = list.indexOf(el);
+    if (i >= 0 && i < list.length - 1) list[i + 1].focus(); else { el.blur(); kpHide(); }
+    return;
+  }
+  var a = el.selectionStart, b = el.selectionEnd, v = el.value;
+  if (a == null) { a = b = v.length; }
+  if (k === 'bs') { if (a === b && a > 0) a--; el.value = v.slice(0, a) + v.slice(b); el.setSelectionRange(a, a); }
+  else { el.value = v.slice(0, a) + k + v.slice(b); el.setSelectionRange(a + 1, a + 1); }
+}
+document.addEventListener('focusin', function (e) { var t = e.target; if (t && t.tagName === 'INPUT' && t.type === 'text' && !t.disabled && !t.hasAttribute('data-free')) kpShow(t); });
+document.addEventListener('focusout', function (e) { if (!COARSE) return; clearTimeout(KHIDE); KHIDE = setTimeout(function () { var a = document.activeElement; if (!(a && a.tagName === 'INPUT' && a.type === 'text' && !a.hasAttribute('data-free'))) kpHide(); }, 150); });
+['touchstart', 'mousedown'].forEach(function (ev) {
+  document.addEventListener(ev, function (e) {
+    var b = e.target && e.target.closest ? e.target.closest('#kp') : null; if (!b) return;
+    e.preventDefault(); // 入力欄のフォーカスを保つ（touchstart を止めると mousedown/click は発生しない）
+    var k = e.target.closest('#kp button'); if (k) kpKey(k.getAttribute('data-k'));
+  }, { passive: false });
+});
+function inputsHTML(kind, pre, unit, dis) {
+  var d = dis ? ' disabled' : '', im = ' inputmode="' + (COARSE ? 'none' : 'decimal') + '" autocomplete="off"';
+  if (kind === 'dms') return '<input type="text" class="s" id="' + pre + '0"' + im + d + '>°<input type="text" class="s" id="' + pre + '1"' + im + d + '>′<input type="text" class="s" id="' + pre + '2"' + im + d + '>″';
+  if (kind === 'dm') return '<input type="text" class="s" id="' + pre + '0"' + im + d + '>°<input type="text" class="s" id="' + pre + '1"' + im + d + '>′';
+  if (kind === 'sci') return '<input type="text" id="' + pre + '0"' + im + d + '> ×10 の <input type="text" class="s" id="' + pre + '1" inputmode="' + (COARSE ? 'none' : 'text') + '" autocomplete="off"' + d + '> 乗 ' + (unit || '');
+  if (kind === 'num') return '<input type="text" class="w" id="' + pre + '0"' + im + d + '> ' + (unit || '');
+  if (kind === 'pm') return '( <input type="text" class="w" id="' + pre + '0"' + im + d + '> ± <input type="text" class="w" id="' + pre + '1"' + im + d + '> ) ' + (unit || '');
+  return '';
+}
+function sel(id, opts, dis) { return '<select id="' + id + '"' + (dis ? ' disabled' : '') + '><option value="">選ぶ</option>' + opts.map(function (o) { return '<option>' + o + '</option>'; }).join('') + '</select>'; }
+function p3HTML(pre, dis) {
+  return '<div class="p3">' +
+    '<p>エネルギー準位は (3)式で与えられるが、n の ' + sel(pre + '0', ['大きい', '小さい'], dis) + ' 方がエネルギーは小さい。</p>' +
+    '<p>電子が、上のエネルギー準位から下のエネルギー準位に落ちるときに光が出るが、n′ と n の差が小さいほど、エネルギー差が ' + sel(pre + '1', ['大きい', '小さい'], dis) + '</p>' +
+    '<p>そのエネルギー差が小さいほど、出てくる光の振動数は ' + sel(pre + '2', ['大きい', '小さい'], dis) + '</p>' +
+    '<p>振動数が小さいほど、波長は ' + sel(pre + '3', ['長い', '短い'], dis) + '</p>' +
+    '<p>赤と紫を比べると、赤い方が波長は ' + sel(pre + '4', ['長い', '短い'], dis) + '</p>' +
+    '<p>したがって、上記の議論を逆にたどると、赤色に対する n′ は ' + sel(pre + '5', ['3', '4', '5'], dis) + ' である。</p></div>';
+}
+function nInputs(kind) { return { dms: 3, dm: 2, sci: 2, num: 1, pm: 2, p3: 6 }[kind]; }
+function readVals(kind, pre) {
+  if (kind === 'mcq3') return [0, 1, 2].map(function (j) { var r = document.querySelector('input[name="ex_m' + j + '"]:checked'); return r ? r.value : ''; });
+  var out = [], n = nInputs(kind); for (var i = 0; i < n; i++) out.push($(pre + i).value); return out;
+}
+function unitHTML(u) {
+  var st = STATE.u[u.id], dis = st.s !== 'open', pre = 'in_' + u.id + '_';
+  var tag = st.s === 'done' ? '<span class="tag done">確認済み</span>' : st.s === 'lock' ? '<span class="tag lock">例題に正解すると再入力できます</span>' : '';
+  var h = '<div class="unit" id="unit_' + u.id + '">';
+  if (u.kind === 'p3') h += p3HTML(pre, dis) + '<p style="margin:4px 0">' + tag + '</p>';
+  else h += '<div class="row"><span class="q">' + u.q + '</span>' + inputsHTML(u.kind, pre, u.unit, dis) + tag + '</div>';
+  if (st.s === 'done') h += '<div class="msg ok">○ 合っています</div>';
+  if (st.s !== 'done' && st.f > 0) {
+    var lv = Math.min(st.f, u.hints.length) - 1;
+    h += '<div class="msg ng">× 合っていません（正しい答えは表示しません）</div>';
+    if (st.h) h += '<div class="hint"><b>入力内容から考えられること</b>' + st.h + '</div>';
+    for (var i = 0; i <= lv; i++) h += '<div class="hint"><b>ヒント ' + (i + 1) + '</b>' + u.hints[i] + '</div>';
+  }
+  if (st.s === 'open') h += '<div class="row"><button type="button" data-check="' + u.id + '">チェック</button><span class="small" id="bad_' + u.id + '"></span></div>';
+  if (st.s === 'lock') h += '<div class="lockbox">この問題は、例題に正解するまで入力できません。ヒントを読み、プリントの答えを見直してから例題に進んでください。<div class="row" style="margin-top:8px"><button type="button" class="warn" data-ex="' + u.id + '">例題に挑戦する（制限時間 ' + CFG.TIME[u.ex] + ' 秒）</button></div></div>';
+  return h + '</div>';
+}
+function fillVals(u) {
+  var st = STATE.u[u.id], pre = 'in_' + u.id + '_';
+  if (st.a) st.a.forEach(function (x, i) { var el = $(pre + i); if (el) el.value = x; });
+}
+function render() {
+  var h = '', cur = 0;
+  UNITS.forEach(function (u) {
+    if (u.sec !== cur) { if (cur) h += '</section>'; cur = u.sec; h += '<section class="card"><h2>' + SECS[cur].t + '</h2><p class="note">' + SECS[cur].n + '</p>'; }
+    h += unitHTML(u);
+  });
+  $('app').innerHTML = h + '</section>';
+  UNITS.forEach(fillVals);
+  updateProgress();
+}
+function rerenderUnit(u) {
+  var old = $('unit_' + u.id), tmp = document.createElement('div');
+  tmp.innerHTML = unitHTML(u); old.parentNode.replaceChild(tmp.firstChild, old); fillVals(u); updateProgress();
+}
+function updateProgress() {
+  var n = UNITS.filter(function (u) { return STATE.u[u.id].s === 'done'; }).length;
+  $('pcount').textContent = '確認済み ' + n + ' / ' + UNITS.length;
+  document.querySelector('#bar i').style.width = (100 * n / UNITS.length) + '%';
+  if (n === UNITS.length) {
+    if (!STATE.done) { var d = new Date(); STATE.done = d.getFullYear() + '/' + (d.getMonth() + 1) + '/' + d.getDate() + ' ' + d.getHours() + ':' + ('0' + d.getMinutes()).slice(-2); saveState(); Scorm.complete(); }
+    $('finish').style.display = 'block'; $('fintime').textContent = '確認日時：' + STATE.done; $('finid').textContent = SID ? '学籍番号：' + SID : '';
+  } else $('finish').style.display = 'none';
+}
+function unitById(id) { return UNITS.filter(function (u) { return u.id === id; })[0]; }
+function doCheck(id) {
+  var u = unitById(id), st = STATE.u[id]; if (st.s !== 'open') return;
+  var vals = readVals(u.kind, 'in_' + id + '_'), r = u.check(vals);
+  if (r.bad) { $('bad_' + id).textContent = r.hint; return; }
+  st.a = vals;
+  if (r.ok) { st.s = 'done'; delete st.h; }
+  else { st.s = 'lock'; st.f = (st.f || 0) + 1; st.h = r.hint || ''; }
+  saveState(); rerenderUnit(u);
+}
+
+/* ========== 例題（制限時間つき） ========== */
+var EX = null;
+function openExample(id) {
+  var u = unitById(id); if (STATE.u[id].s !== 'lock') return;
+  var ex = GEN[u.ex](), T = CFG.TIME[u.ex];
+  EX = { u: u, ex: ex, end: Date.now() + T * 1000, T: T, timer: null, over: false };
+  var inp = ex.kind === 'mcq3' ? '' : '<div class="row">' + inputsHTML(ex.kind, 'ex_', ex.unit, false) + '</div>';
+  $('mbox').innerHTML = '<h3>例題（制限時間 ' + T + ' 秒）</h3><p class="small">予習問題とは数値が違います。時間内に答えてください。途中でやめることはできません。</p><div id="timer"><i></i></div><div id="tleft"></div>' + ex.html + inp + '<div class="row" id="ex_btn"><button type="button" id="ex_submit">答える</button></div><div id="ex_res"></div>';
+  $('modal').classList.add('on'); $('modal').scrollTop = 0;
+  centerDials();
+  var zb = $('zoombtn'); if (zb) zb.onclick = function () { document.querySelector('#mbox .dialwrap').classList.toggle('zoom'); centerDials(); };
+  $('ex_submit').onclick = function () { judgeExample(false); };
+  tick(); EX.timer = setInterval(tick, 200);
+}
+function centerDials() {
+  Array.prototype.forEach.call(document.querySelectorAll('#mbox .dialwrap'), function (w) { w.scrollLeft = (w.scrollWidth - w.clientWidth) / 2; });
+}
+function tick() {
+  if (!EX || EX.over) return;
+  var left = Math.max(0, EX.end - Date.now());
+  document.querySelector('#timer i').style.width = (100 * left / (EX.T * 1000)) + '%';
+  $('tleft').textContent = '残り ' + Math.ceil(left / 1000) + ' 秒';
+  if (left <= 0) judgeExample(true);
+}
+function judgeExample(timeout) {
+  if (!EX || EX.over) return;
+  EX.over = true; clearInterval(EX.timer);
+  var ok = !timeout && EX.ex.check(readVals(EX.ex.kind, 'ex_'));
+  Array.prototype.forEach.call(document.querySelectorAll('#mbox input'), function (el) { el.disabled = true; });
+  $('ex_btn').innerHTML = '';
+  var id = EX.u.id, h;
+  if (ok) {
+    STATE.u[id].s = 'open'; saveState();
+    h = '<div class="msg ok">○ 例題は正解です。予習問題に戻り、自分の答えを見直して入力し直してください。</div><div class="row"><button type="button" id="ex_back">予習問題に戻る</button></div>';
+  } else {
+    h = '<div class="msg ng">' + (timeout ? '× 時間切れです。' : '× 例題の答えが違います。') + '</div><div class="sol"><b class="h">この例題の解き方</b>' + EX.ex.sol + '</div><p class="small">解き方を確認したら、別の数値の例題に挑戦してください。</p><div class="row"><button type="button" class="warn" id="ex_again">別の例題に挑戦する</button></div>';
+  }
+  $('ex_res').innerHTML = h;
+  if (ok) $('ex_back').onclick = function () { $('modal').classList.remove('on'); var u = EX.u; EX = null; rerenderUnit(u); var el = $('unit_' + u.id); if (el.scrollIntoView) el.scrollIntoView({ block: 'center' }); };
+  else $('ex_again').onclick = function () { var uid = EX.u.id; EX = null; openExample(uid); };
+  centerDials();
+  var res = $('ex_res'); if (res.scrollIntoView) res.scrollIntoView({ block: 'nearest' });
+}
+
+document.addEventListener('click', function (e) {
+  var t = e.target; if (!t || !t.getAttribute) return;
+  if (t.getAttribute('data-check')) doCheck(t.getAttribute('data-check'));
+  else if (t.getAttribute('data-ex')) openExample(t.getAttribute('data-ex'));
+});
+document.addEventListener('keydown', function (e) {
+  if (e.key !== 'Enter' || !e.target || e.target.tagName !== 'INPUT') return;
+  var id = e.target.id || '';
+  if (id.indexOf('ex_') === 0) { if ($('ex_submit')) judgeExample(false); }
+  else if (id.indexOf('in_') === 0) doCheck(id.split('_')[1]);
+  else if (id === 'sid') begin();
+});
+window.addEventListener('beforeunload', function () { Scorm.finish(); });
+window.addEventListener('pagehide', function () { Scorm.finish(); });
+
+/* ========== 単独で動かす場合（LMSなし）：学籍番号ごとに進行状況を端末へ保存 ========== */
+function showStart() {
+  SID = ''; kpHide();
+  $('app').innerHTML = ''; $('finish').style.display = 'none'; $('who').style.display = 'none';
+  $('pcount').textContent = '学籍番号を入力'; document.querySelector('#bar i').style.width = '0';
+  $('sid').value = ''; $('smsg').textContent = ''; $('start').style.display = 'block'; window.scrollTo(0, 0);
+}
+function begin() {
+  var id = norm($('sid').value).toUpperCase();
+  if (!/^[0-9A-Z-]{4,12}$/.test(id)) { $('smsg').textContent = '学籍番号を、半角の英数字で正しく入力してください。'; return; }
+  SID = id; $('sid').blur(); $('start').style.display = 'none';
+  $('whoid').textContent = '学籍番号 ' + SID; $('who').style.display = 'flex';
+  loadState(); render();
+}
+$('sbtn').onclick = begin;
+$('swap').onclick = function () { saveState(); showStart(); };
+
+Scorm.init();
+if (Scorm.has()) { loadState(); render(); } else { showStart(); }
+</script>
+</body>
+</html>
