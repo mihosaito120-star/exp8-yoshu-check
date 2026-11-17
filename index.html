@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-title" content="予習チェック">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#0f5e8c">
-<script>if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0) { navigator.serviceWorker.register('sw.js'); }</script>
+<script>window.__PWA = true; if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0) { navigator.serviceWorker.register('sw.js'); }</script>
 <style>
 :root{--ink:#1c2733;--sub:#5b6875;--line:#d5dce3;--bg:#f3f5f7;--card:#fff;--main:#0f5e8c;--ok:#1a7f4b;--okbg:#e6f4ec;--ng:#b3261e;--ngbg:#fdeceb;--hint:#fff7e0;--hintline:#e6c65c}
 *{box-sizing:border-box}
@@ -109,6 +109,7 @@ body.kpon #mbox{margin:0}
     <p class="note">同じ学籍番号で入り直すと、続きから再開します（入力できなくなった問題も、そのまま引き継がれます）。終わったら「終了して交代」を押してください。</p>
     <div class="row"><input type="text" id="sid" data-free="1" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" inputmode="text"> <button type="button" id="sbtn">はじめる</button></div>
     <p class="small" id="smsg" style="color:#b3261e"></p>
+    <p class="small" id="offmsg"></p>
   </section>
   <div id="app"></div>
   <section class="card" id="finish">
@@ -698,11 +699,18 @@ function begin() {
   $('whoid').textContent = '学籍番号 ' + SID; $('who').style.display = 'flex';
   loadState(); render();
 }
+function offlineStatus() { // アプリ版のみ：オフライン用の保存が済んだかを表示する
+  var el = $('offmsg'); if (!el || !window.__PWA || !('serviceWorker' in navigator) || !window.caches) return;
+  el.style.color = '#a15c00'; el.textContent = 'オフライン用の準備中です。通信がつながった状態で、このまま数秒お待ちください。';
+  navigator.serviceWorker.ready.then(function () { return caches.match('index.html'); }).then(function (m) {
+    if (m) { el.style.color = '#1a7f4b'; el.textContent = '✓ この端末は通信なしでも使えます。'; } else setTimeout(offlineStatus, 1500);
+  }).catch(function () {});
+}
 $('sbtn').onclick = begin;
 $('swap').onclick = function () { saveState(); showStart(); };
 
 Scorm.init();
-if (Scorm.has()) { loadState(); render(); } else { showStart(); }
+if (Scorm.has()) { loadState(); render(); } else { showStart(); offlineStatus(); }
 </script>
 </body>
 </html>
